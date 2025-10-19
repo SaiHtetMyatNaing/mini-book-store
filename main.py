@@ -1,55 +1,43 @@
 from fastapi import FastAPI 
+from pydantic import BaseModel
 
 app = FastAPI()
 
 books = [
-  {
-    "id": 2,
-    "title": "To Kill a Mockingbird",
-    "author": "Harper Lee",
-    "year": 1960
-  },
-  {
-    "id": 3,
-    "title": "The Great Gatsby",
-    "author": "F. Scott Fitzgerald",
-    "year": 1925
-  },
-  {
-    "id": 4,
-    "title": "One Hundred Years of Solitude",
-    "author": "Gabriel Garcia Marquez",
-    "year": 1967
-  },
-  {
-    "id": 5,
-    "title": "Pride and Prejudice",
-    "author": "Jane Austen",
-    "year": 1813
-  }
+  {"id": 2,  "title": "To Kill a Mockingbird", "author": "Harper Lee", "year": 1960},
+  {"id": 3, "title": "The Great Gatsby", "author": "F. Scott Fitzgerald", "year": 1925},
+  {"id": 4, "title": "One Hundred Years of Solitude", "author": "Gabriel Garcia Marquez","year": 1967},
+  {"id": 5, "title": "Pride and Prejudice", "author": "Jane Austen","year": 1813}
 ]
 
+class Book(BaseModel):
+  titile : str
+  author : str
+  year : int
 
-@app.get('/')
+@app.get("/")
 def read_root():
-    return {  "hello" : "world"}
-
-# GET - Retrieve all books
-@app.get('/books')
-def get_all_books():
-    return books
+  return { "Hello" : "World" }
 
 
-# GET - Retrive a single book
-@app.get("/books/{book_id}")
-def get_single_book(book_id :int):
+# POST - Create a new book
+@app.post("/books")
+def create_book( book : Book ):
+  
+  new_book = {
+    "id" : 6 ,
+    "title" : book.titile,
+    "author" : book.author,
+    "year" : book.year
+  }
+  books.append(new_book)
+  
+  return { "message" : "Book created successfully" , "Book" : books }
     
-    # Get a specific book by ID (path parameter)
-    for book in books:
-        if book["id"] == book_id:
-            return book
-        
-    return {"message" : "Book not found"}
+    
+    
+    
 
+   
 
 
